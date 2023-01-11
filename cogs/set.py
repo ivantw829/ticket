@@ -20,7 +20,7 @@ class set(commands.Cog):
         embed = discord.Embed(title=標題, description=內容, color=0xFEE45C)
         message = await 頻道.send(embed=embed)  # 傳送開啟訊息
         await message.add_reaction("📩")  # 添加反應
-        path = F"database/open.json"
+        path = "database/open.json"
         if not os.path.isfile(path):  # 檢測是否有設置檔
             with open(path, "w") as file:  # 創建新的設置檔
                 data = {}
