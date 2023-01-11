@@ -18,8 +18,6 @@ class close(commands.Cog):
             with open(path, "w") as file:  # 創建新的設置檔
                 data = {}
                 json.dump(data, file, indent=4)
-        if payload.member.bot:  # 檢測反應者是否為機器人
-            return  # 如果是就結束運行(防止偵測機器人自己按的)
         if payload.emoji.name != "🔒":  # 檢測是否是關閉reaction
             return  # 如果不是就結束運行
         with open(path, "r") as file:  # 開啟關閉訊息資料檔案
