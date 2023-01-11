@@ -1,1 +1,1 @@
-py-cord
+py-cord==2.3.2
