@@ -1,13 +1,11 @@
-import discord
-import os
-import json
 import asyncio
+import json
+import os
+
 from discord.ext import commands
-from discord.commands import Option
-from discord.commands import slash_command
 
 
-class close(commands.Cog):
+class Close(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -29,11 +27,11 @@ class close(commands.Cog):
         channel = await self.bot.fetch_channel(payload.channel_id)  # 抓取該頻道資料
         await channel.send("Ticket將在10秒後刪除")
         await asyncio.sleep(10)  # 等待10秒鐘
-        await channel.delete(reason=F"由 {payload.member} 關閉Ticket")
+        await channel.delete(reason=f"由 {payload.member} 關閉Ticket")
         with open(path, "w") as file:
             del data[str(payload.channel_id)]  # 移除關閉訊息資料中的該頻道資料
             json.dump(data, file)
 
 
 def setup(bot):
-    bot.add_cog(close(bot))
+    bot.add_cog(Close(bot))

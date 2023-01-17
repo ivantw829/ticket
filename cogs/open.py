@@ -1,8 +1,7 @@
-import discord
 import json
+
+import discord
 from discord.ext import commands
-from discord.commands import Option
-from discord.commands import slash_command
 
 
 class Open(commands.Cog):
@@ -19,7 +18,7 @@ class Open(commands.Cog):
         with open(path, "r") as file:  # 以read模式開啟檔案
             data = json.load(file)  # 載入檔案資料
         guildID = str(payload.guild_id)
-        if not guildID in data.keys():  # 檢查群組是否有設置
+        if guildID not in data.keys():  # 檢查群組是否有設置
             return  # 結束運行
         if payload.message_id != data[guildID]["message"]:  # 檢查是否是開啟訊息
             return  # 結束運行
@@ -32,20 +31,22 @@ class Open(commands.Cog):
         # 設置頻道權限
         overwrites = {
             payload.member: discord.PermissionOverwrite(read_messages=True),
-            guild.default_role: discord.PermissionOverwrite(read_messages=False)}
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+        }
         # 創建客服頻道
-        ticket = await guild.create_text_channel(name=f"ticket-{payload.member.name}", category=category, overwrites=overwrites)
+        ticket = await guild.create_text_channel(
+            name=f"ticket-{payload.member.name}", category=category, overwrites=overwrites
+        )
         # 客服單關閉嵌入訊息
-        embed = discord.Embed(
-            title=F"{payload.member} 的客服單", description="請詳細說明您的問題並等待管理員處理")
+        embed = discord.Embed(title=f"{payload.member} 的客服單", description="請詳細說明您的問題並等待管理員處理")
         message = await ticket.send(embed=embed)  # 在客服單傳送初始訊息
         await message.add_reaction("🔒")  # 添加關閉反應
         # 新增關閉Ticket訊息資料
-        with open(F"database/close.json", "r") as file:  # 用read模式開啟資料檔案
+        with open("database/close.json", "r") as file:  # 用read模式開啟資料檔案
             data = json.load(file)  # 讀取資料
             # 更改資料字典(複習https://youtu.be/y7Wa7NaSKgs)
             data[str(ticket.id)] = message.id
-        with open(F"database/close.json", "w") as file:  # 用write模式開啟資料檔案
+        with open("database/close.json", "w") as file:  # 用write模式開啟資料檔案
             json.dump(data, file, indent=4)  # 上傳更新後的資料
         await ticket.send(payload.member.mention, delete_after=0)  # 傳送提示訊息
 
